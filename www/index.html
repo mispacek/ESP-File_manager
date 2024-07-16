@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=0.80, maximum-scale=1.0, user-scalable=yes" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes"> 
+    <title>File Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="file-manager">
+        <div class="toolbar">
+            <input type="file" id="file-upload" style="display: none;">
+            <button id="upload"><img src="icons/upload.png" class="icon"> <span>Upload</span></button>
+            <button id="download"><img src="icons/download.png" class="icon"> <span>Download</span></button>
+            <button id="move-to"><img src="icons/move.png" class="icon"> <span>Move To</span></button>
+            <button id="copy-to"><img src="icons/copy.png" class="icon"> <span>Copy To</span></button>
+            <button id="rename"><img src="icons/rename.png" class="icon"> <span>Rename</span></button>
+            <button id="new-folder"><img src="icons/new_folder.png" class="icon"> <span>New Folder</span></button>
+            <button id="delete"><img src="icons/delete.png" class="icon"> <span>Delete</span></button>
+            <button id="clear-selection"><img src="icons/clear.png" class="icon"> <span>Clear Selection</span></button>
+        </div>
+        <div class="breadcrumb" id="breadcrumb">
+            <!-- Dynamic breadcrumb navigation -->
+        </div>
+        <div class="file-list" id="file-list" ondrop="handleDrop(event)" ondragover="allowDrop(event)">
+            <table id="file-table">
+                <thead>
+                    <tr>
+                        <th>Select</th>
+                        <th>Name</th>
+                        <th>File Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic file listing -->
+                </tbody>
+            </table>
+        </div>
+        <div id="error-message" style="color: red;"></div>
+    </div>
+    <div id="popup-overlay" class="popup-overlay" style="display: none;">
+        <div id="popup-window" class="popup-window">
+            <div id="popup-content"></div>
+            <button id="popup-close" class="popup-button">Close</button>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>
