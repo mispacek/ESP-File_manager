@@ -15,3 +15,6 @@
 - New folder creation
 - Delete files on ESP
 - Mobile phone optimized
+
+
+![Preview](https://github.com/user-attachments/assets/b722a89c-3ca3-424a-98cb-9275466276c3)
