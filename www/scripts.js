@@ -17,6 +17,45 @@ let currentPath = '/';
 let selectedFiles = [];
 let popup_modal = false;
 
+
+
+let upIconBase64;
+let folderIconBase64;
+let fileIconBase64;
+
+
+function loadImageAsBase64(url, callback) {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            callback(reader.result);
+        };
+        reader.readAsDataURL(xhr.response);
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+}
+
+
+loadImageAsBase64('icons/up.png', (dataUrl) => {
+    upIconBase64 = dataUrl;
+});
+
+loadImageAsBase64('icons/folder.png', (dataUrl) => {
+    folderIconBase64 = dataUrl;
+});
+
+loadImageAsBase64('icons/file.png', (dataUrl) => {
+    fileIconBase64 = dataUrl;
+});
+
+
+
+
+
+
 function allowDrop(event) {
     event.preventDefault();
 }
@@ -125,7 +164,7 @@ function loadDirectoryContents(path) {
                 const nameCell = document.createElement('td');
                 nameCell.style.cursor = 'pointer';
                 nameCell.addEventListener('click', () => loadDirectoryContents(path.substring(0, path.lastIndexOf('/')) || '/'));
-                nameCell.innerHTML = `<img src="icons/up.png" class="file-icon"> ..`;
+                nameCell.innerHTML = `<img src="${upIconBase64}" class="file-icon"> ..`;
 
                 const sizeCell = document.createElement('td');
                 sizeCell.textContent = '';
@@ -158,9 +197,11 @@ function loadDirectoryContents(path) {
                 selectCell.appendChild(selectInput);
 
                 const nameCell = document.createElement('td');
+                const iconSrc = file.isDirectory ? folderIconBase64 : fileIconBase64;
                 const icon = document.createElement('img');
                 icon.className = 'file-icon';
-                icon.src = file.isDirectory ? 'icons/folder.png' : 'icons/file.png';
+                icon.src = iconSrc;
+
                 nameCell.appendChild(icon);
                 nameCell.appendChild(document.createTextNode(file.name));
 
