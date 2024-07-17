@@ -136,7 +136,14 @@ function loadDirectoryContents(path) {
                 fileTable.appendChild(row);
             }
 
-            data.contents.forEach(file => {
+            // Separate and sort directories and files
+            const directories = data.contents.filter(file => file.isDirectory).sort((a, b) => a.name.localeCompare(b.name));
+            const files = data.contents.filter(file => !file.isDirectory).sort((a, b) => a.name.localeCompare(b.name));
+
+            // Combine sorted directories and files
+            const sortedContents = directories.concat(files);
+
+            sortedContents.forEach(file => {
                 const row = document.createElement('tr');
                 const selectCell = document.createElement('td');
                 const selectInput = document.createElement('input');
@@ -170,6 +177,7 @@ function loadDirectoryContents(path) {
                 row.appendChild(sizeCell);
                 fileTable.appendChild(row);
             });
+
             if (popup_modal == false) {
                 closePopup();
             }
@@ -178,6 +186,7 @@ function loadDirectoryContents(path) {
             showError(error.message);
         });
 }
+
 
 function updateBreadcrumb() {
     const breadcrumb = document.getElementById('breadcrumb');
