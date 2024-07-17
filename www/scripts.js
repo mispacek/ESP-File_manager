@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     loadDirectoryContents('/');
-
+    
     document.getElementById('upload').addEventListener('click', () => document.getElementById('file-upload').click());
     document.getElementById('file-upload').addEventListener('change', uploadFile);
     document.getElementById('download').addEventListener('click', downloadFiles);
@@ -348,37 +348,39 @@ function hexEncode(buffer) {
 
 function uploadFile() {
     const fileInput = document.getElementById('file-upload');
-    const file = fileInput.files[0];
-    const reader = new FileReader();
+    const files = fileInput.files;
 
-    let new_path = currentPath + '/' + file.name;
-    new_path = new_path.replace(/\/\//g, '/');
+    Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        let new_path = currentPath + '/' + file.name;
+        new_path = new_path.replace(/\/\//g, '/');
 
-    showLoading(" Uploading file. Please wait... ");
+        showLoading(" Uploading file. Please wait... ");
 
-    reader.onload = async function(event) {
-        const fileSize = event.target.result.byteLength;
-        const hexData = hexEncode(event.target.result);
+        reader.onload = async function(event) {
+            const fileSize = event.target.result.byteLength;
+            const hexData = hexEncode(event.target.result);
 
-        // Create and send the HTTP request
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", `/upload;${new_path};${fileSize}`, true);
-        xhr.setRequestHeader("Content-Type", "text/plain");
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    showNotification("File " + file.name + " uploaded successfully!");
-                    loadDirectoryContents(currentPath);
-                    clearSelection();
-                } else {
-                    showError("File upload failed!")
-                    loadDirectoryContents(currentPath);
-                    clearSelection();
+            // Create and send the HTTP request
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", `/upload;${new_path};${fileSize}`, true);
+            xhr.setRequestHeader("Content-Type", "text/plain");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        showNotification("File " + file.name + " uploaded successfully!");
+                        loadDirectoryContents(currentPath);
+                        clearSelection();
+                    } else {
+                        showError("File upload failed!")
+                        loadDirectoryContents(currentPath);
+                        clearSelection();
+                    }
                 }
-            }
+            };
+            xhr.send(hexData);
         };
-        xhr.send(hexData);
-    };
 
-    reader.readAsArrayBuffer(file);
+        reader.readAsArrayBuffer(file);
+    });
 }

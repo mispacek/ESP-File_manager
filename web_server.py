@@ -106,17 +106,22 @@ class WebServer:
 
     def client_handler(self, client):
         try:
-            request = client.recv(1024)
+            request = client.recv(2048)
             if request:
                 _, path, _ = request.decode("utf-8").split(" ", 2)
                 for pattern, handler in self.url_handlers.items():
                     if path.startswith(pattern):
-                        handler(client, path, request)
+                        try:
+                            handler(client, path, request)
+                        except Exception as e:
+                            print("Handler Exception:", e)
+                        client.close()
                         return
                 # Default file serving if no handler matches
                 self.serve_file(client, path)
         except Exception as e:
             sleep_ms(0)
+            #print("Webserver Exception:", e)
         finally:
             client.close()
 
