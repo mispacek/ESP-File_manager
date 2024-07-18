@@ -22,8 +22,14 @@
             <button id="delete"><img src="icons/delete.png" class="icon"> <span>Delete</span></button>
             <button id="clear-selection"><img src="icons/clear.png" class="icon"> <span>Clear Selection</span></button>
         </div>
-        <div class="breadcrumb" id="breadcrumb">
-            <!-- Dynamic breadcrumb navigation -->
+        <div id="breadcrumb-container">
+            <div class="breadcrumb" id="breadcrumb"></div>
+            <div id="status-container">
+                <div id="progressbar-container">
+                    <div id="progressbar"></div>
+                </div>
+                <div id="memory-status"></div>
+            </div>
         </div>
         <div class="file-list" id="file-list" ondrop="handleDrop(event)" ondragover="allowDrop(event)">
             <table id="file-table">

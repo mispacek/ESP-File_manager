@@ -77,6 +77,11 @@ def _handle_move(client, path, request):
 def _handle_copy(client, path, request):
     filemanager.handle_copy(client, path, request)
 
+@webserver.handle('/status')
+def _handle_status(client, path, request):
+    filemanager.handle_status(client, path, request)
+
+
 
 
 webserver.start()

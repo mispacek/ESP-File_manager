@@ -149,3 +149,37 @@ body {
 .popup-button:hover {
     background-color: #808080;
 }
+
+#breadcrumb-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#status-container {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+#progressbar-container {
+    width: 100px;
+    height: 20px;
+    background-color: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-right: 10px;
+}
+
+#progressbar {
+    height: 100%;
+    width: 0;
+    background-color: red;
+    border-radius: 5px;
+    transition: width 1s, background-color 1s;
+}
+
+#memory-status {
+    font-size: 14px;
+    color: #333;
+}

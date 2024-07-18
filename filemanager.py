@@ -337,3 +337,27 @@ def delete_path(path):
                 os.remove(current_path)
             except Exception as e:
                 print(f"Error deleting file {current_path}: {e}")
+
+
+def handle_status(client, path, request):
+    try:
+        s = os.statvfs('//')
+        flash100 = (s[0]*s[2])/1048576
+        flash = (s[0]*s[3])/1048576
+        P = flash/flash100*100
+        
+        contents = ({
+            'progress': '{0:.1f}'.format(P),
+            'memoryFree': '{0:.1f}'.format(flash),
+            'memoryTotal': '{0:.1f}'.format(flash100)
+        })
+        
+        response = ujson.dumps(contents)
+        client.send(fm_200_json)
+        client.send(response)
+        #print(response)
+    except Exception as e:
+        print("Error:", e)
+        client.send(fm_500)
+        client.send("Internal Server Error")
+     
