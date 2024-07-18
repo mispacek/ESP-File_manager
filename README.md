@@ -18,10 +18,11 @@
 
 Desktop version
 
-![image](https://github.com/user-attachments/assets/64a1b319-2e58-48bf-a7d6-e00e55024137)
+![image](https://github.com/user-attachments/assets/0b80c88d-ee03-41f2-830b-de1c3c327029)
+
 
 
 
 Mobile version 
 
-![image](https://github.com/user-attachments/assets/9f6b94b1-1643-426c-9213-6e7176e5473a)
+![image](https://github.com/user-attachments/assets/e8502d5f-aea0-4c75-8dc3-74eb2b57fa75)
