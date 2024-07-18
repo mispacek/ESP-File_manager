@@ -20,10 +20,9 @@
 
 
 Desktop version
+![chrome-capture-2024-7-19 (2)](https://github.com/user-attachments/assets/df703761-09f5-4ba8-b380-5ed8d5e2b363)
 
 ![image](https://github.com/user-attachments/assets/0b80c88d-ee03-41f2-830b-de1c3c327029)
-
-
 
 
 Mobile version 
