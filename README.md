@@ -1,5 +1,5 @@
-# ESP-File_manager
- Online file manager for ESP32 micropython
+# ESP-File_manager for Micropython
+ Web browser based file manager for ESP32 running directly on device
 
  Upload files to your ESP and try it !
  Please configure your wifi setting in main.py 
@@ -8,13 +8,16 @@
 
 
 # Supported functions
-- Upload files (Drag and drop to browser window is supported, you can drop multiple files)
-- Copy multiple files to another directory
-- Move multiple files to another directory
+- Upload files and directories (Drag and drop to browser window is supported, you can drop multiple files)
+- Copy multiple files and directories to another directory
+- Move multiple files and directories to another directory
 - Download multiple files to your PC
 - New folder creation
-- Delete files on ESP
+- Delete files and directories in ESP
 - Mobile phone optimized
+- Free space indicator
+
+
 
 Desktop version
 
