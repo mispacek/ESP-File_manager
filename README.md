@@ -16,5 +16,12 @@
 - Delete files on ESP
 - Mobile phone optimized
 
+Desktop version
 
-![Preview](https://github.com/user-attachments/assets/b722a89c-3ca3-424a-98cb-9275466276c3)
+![image](https://github.com/user-attachments/assets/64a1b319-2e58-48bf-a7d6-e00e55024137)
+
+
+
+Mobile version 
+
+![image](https://github.com/user-attachments/assets/9f6b94b1-1643-426c-9213-6e7176e5473a)
