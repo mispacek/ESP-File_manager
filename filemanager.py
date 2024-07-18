@@ -246,16 +246,63 @@ def handle_newfolder(client, path, request):
         client.send("Internal Server Error")
 
 
+def handle_copy(client, path, request):
+    try:
+        query_params = ujson.loads(urldecode(path).split('?data=')[1])
+        src_files = query_params['src']
+        dest_path = query_params['dest']
+        stack = []
+
+        for src in src_files:
+            stack.append((src, dest_path))
+
+        while stack:
+            current_src, current_dest = stack.pop()
+            if is_directory(current_src):
+                new_dir_path = current_dest + '/' + current_src.split('/')[-1]
+                os.mkdir(new_dir_path)
+                for entry in os.listdir(current_src):
+                    stack.append((current_src + '/' + entry, new_dir_path))
+            else:
+                with open(current_src, 'rb') as f_src:
+                    with open(current_dest + '/' + current_src.split('/')[-1], 'wb') as f_dest:
+                        for piece in read_in_chunks(f_src):
+                            f_dest.write(piece)
+        
+        client.send(fm_200_text)
+        client.send("Files copied successfully.")
+    except OSError as e:
+        print("OSError:", e)
+        client.send(fm_500)
+        client.send("Internal Server Error")
+
 
 def handle_move(client, path, request):
     try:
         query_params = ujson.loads(urldecode(path).split('?data=')[1])
         src_files = query_params['src']
         dest_path = query_params['dest']
+        stack = []
+
         for src in src_files:
-            full_src_path =  src
-            full_dest_path = dest_path + '/' + src.split('/')[-1]
-            os.rename(full_src_path, full_dest_path)
+            stack.append((src, dest_path))
+
+        # Přesun souborů a adresářů
+        while stack:
+            current_src, current_dest = stack.pop()
+            if is_directory(current_src):
+                new_dir_path = current_dest + '/' + current_src.split('/')[-1]
+                if not path_exists(new_dir_path):
+                    os.mkdir(new_dir_path)
+                for entry in os.listdir(current_src):
+                    stack.append((current_src + '/' + entry, new_dir_path))
+            else:
+                os.rename(current_src, current_dest + '/' + current_src.split('/')[-1])
+
+        # Smazání prázdných původních adresářů
+        for src in src_files:
+            delete_path(src)
+
         client.send(fm_200_text)
         client.send("Files moved successfully.")
     except OSError as e:
@@ -263,22 +310,30 @@ def handle_move(client, path, request):
         client.send(fm_500)
         client.send("Internal Server Error")
 
+def delete_path(path):
+    if not path_exists(path):
+        #print(f"Path {path} does not exist.")
+        return
 
-def handle_copy(client, path, request):
-    try:
-        query_params = ujson.loads(urldecode(path).split('?data=')[1])
-        src_files = query_params['src']
-        dest_path = query_params['dest']
-        for src in src_files:
-            full_src_path = src
-            full_dest_path = dest_path + '/' + src.split('/')[-1]
-            with open(full_src_path, 'rb') as f_src:
-                with open(full_dest_path, 'wb') as f_dest:
-                    for piece in read_in_chunks(f_src):
-                        f_dest.write(piece)
-        client.send(fm_200_text)
-        client.send("Files copied successfully.")
-    except OSError as e:
-        print("OSError:", e)
-        client.send(fm_500)
-        client.send("Internal Server Error")
+    stack = [path]
+
+    # Iterační průchod pro mazání souborů a podadresářů
+    while stack:
+        current_path = stack.pop()
+        if is_directory(current_path):
+            try:
+                entries = list(os.ilistdir(current_path))
+                if not entries:
+                    os.rmdir(current_path)
+                else:
+                    stack.append(current_path)
+                    for entry in entries:
+                        entry_path = current_path + '/' + entry[0]
+                        stack.append(entry_path)
+            except Exception as e:
+                print(f"Error accessing directory {current_path}: {e}")
+        else:
+            try:
+                os.remove(current_path)
+            except Exception as e:
+                print(f"Error deleting file {current_path}: {e}")

@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
 let currentPath = '/';
 let selectedFiles = [];
 let popup_modal = false;
+let popupTimer;
 
 let upIconBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAENklEQVR42p2WTWxUVRTH//fNR9vhTttpSwkfEogulI0L485oEBNTQxNXLmrUkLBS4mfjZ0JABGpAExokJSYS17oBwWAUhbgxGuPGFijETChlOm1npjN905n37nvv+L8zVRfaMOMkkztv3n3nd87/f86dUWjjpceXBSHgvpZWrT7T8kb98Yrs2GqwfUscF65EcN9qDdLSJn3UlcyAwaWRXiQEeP5yBb/9zEre77nr83fdoA+5kkx78s2ejLrHUVgyEeZDhZe/K+PmFCGHMup/A/SBZVHar53f09u1o8vBVDnElCvQCcCJKRy9VEH2moI7tjZkzRt6f1mky8fZvX14SDuYrIT4qUiPlSAIBN1JB/GY4NjFCuazhBzrVy0D9NtlqSc8fLkvg8e647jK4D8WI96hAVx8vmu+oKvDgRBy+mwJ5Vwc7okBdVeAfndJauLhzIsZDK9P4DpluVyIEIg04ptI4IXNdcUHutc5qAYhvriwhOpigpD1ak2AfqcsrqlhYl8fntmQwDQz/34xgm8E4gAhIYbB6wzuB7y2EK69nTGU+cX5r8owtRjc8Q3qXwD9RkmqXh2nXu/Ds5uSyC6HODsfYsUAHdS9vpq1BfirAFqBgJ1VZyW6S6FQDXDlXIkbKNfERvU3QB8uS9L3sP+FHoxsTqJKfacqEX5YCBAyUJzZe6zCBjZWJhvcfubqMoMYDQdBujuBIkv65RwrMZTrk0Gl9AdLIjGDoYeTGHpgHW7OGxQ8QQfbMMXIK+x7L5RGttFqFRbUuOa+/M07rMBBgFQjk9TGJFxKO32pjM5+DaUPlyQW+thEzYvM2mP2QSnCwH0JjO7S2NYJfH0rQMn6YD1gB5nQSsWgJFZuzCE77UXVZAdHIw6nnkCyLw7PDRCY2NpzkDlYkCPP6UabnrzhYYbwuGoaXWf6oePA0Jjq7TkUFjWyBze3Pgf2NfBRUUafSuGRPgenr3uYrQAxZQeN+pumwX6dLbtwC8uzA8iObWwP0D9WkJd2r8NOngKnrhssLFMb26qm2UmBKAR+iFohj5U/Upg5sbU9QO+RRdk7lMLj/TGcvOqhYCvAPx74HIyQAHOnCI+dOXv83vYAmQMLMmIr6HcwMUlAuSnRX7MQRgqGAP92nqtG/sM2K+h5b16eHk5hFyv4dNJHgRIp25p2DihTGNFknhn12TxUoLFwvF3AaF6eZAWPbojhs9/rKC9xszWZ7gZ2HuiBEGBycxBWUBrf3h4g/WpOntjNNt3i4MyvPkpLUfMwtcdDGEFYgW8lyuWRNGmUTm1rD6BfycnO4TQGU4JvJw0CTq1we2Sn2rap4lFtTZ7J0fw03HYBg2/mpP/BFGps/Br1dzi1hlMeBZz2aoiIwUOeXz4d1xxC9/P726xgJCu1QpGyqEb/C7Nm40NFQeNXjYcP7F8YewTpjgG4F/8b8CftPHDwwRULGgAAAABJRU5ErkJggg==";
 let folderIconBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAADtElEQVR42r1V3WtcRRT/nbvZjd0k/UgqNqIPimiRqrVQQitIkRIp6IOiYBGf/B/6YouKVCzSJimxKSLWmFQJptJigvhJ6YOiD1raICmtSW2bdDfZbJrdfJo7c3rm4969KVZrig53mHvnzpzfOb/fmTOE/7jR/wJwbiexDhngpbBBmvDQJ3xbTtDAi8T1Tz2P+uad4MUFB6IZVFWF4rc9KJ48jg2fLR+EfnkWvL6lFyvubQTm8tY4WIv7hNnhIZx7cxc2nVg+lfTTDvCGd7uRvWcFeK5k3AdCDUqlMD38O357ey+a+m8D4Idm8KMHulHTWA1emLL2oRUoCFA6P4jTe/ajqubvFPzraaoCtvSB6Pvt4M0HulDbmJEIBMCIoA2KgFSvwXwxjXB2CmRkIHYOmJGlK23pZGPSfBvLZhTnpgZP40Lv+6BvtoGb2j5G3bq0AFxzANFmeag6Gxuy8wnD8ZxxiJVQ6/UTesuXLuLntvdAXz4J3traiZWNBmDSR8CWJrvYbFbRN1cMRyDaA+jEdwCURkbx4+Eu0PEt4G3tH2HVupRocM1vhDckMStV8dxSJ2Oo3Ki8Eyq0DrBfE0gGTl4examObtCxJvD29g+x0gBYDQyfsmF+QgCnAQuq3JylTblu5tL1QoeoGUgWZOpkXtaEi5LhhOKVEZzs+BTUsxncfOgIVq/V0JNnxKCALJQTOnh65J0tFRGQ6Yvyy0SwKH6lEWRWg2ruFrw7MXHpMr7rOAo6ugm8o20f1mQvQs8WHd/+LDheQ3kig95zG4V2xg2g+WdoE0BDVxBkMDm3Cl93nQJ1bgQ/0/IW6uuuQk8X4s2x15FBjkBdBFon6EqsN53EqYmxGXzVPwr64BHwc60CUDsCXR7zmXAzSpQ8CYM6Etj9Zx9RIAkwkZ9Df99V0OGHwS+0vYGGmisCkLPscJR2OinsDZQsEdw449aQ6XImCmPzONGXA7WvB7/U+joaav+ALuVtAHG4CQNLKFHJCFTFuAcyERTGF/B5Xx7U8iD4ldY9aMgOQ5XHK4fIR6BjsZXTgBOUJL9j6rRN03EB6PlCAPbfD3754G7clR2CKuXiYucoSYh4U0qUTwSf0tJSctDyBQE4JgDv3Ad+9dBurM0MyfkejfNf61vgOzTvob9DOK6uUoqQy/2Jzl7RYN8D4MeefgKPb7wDaqYgGyjOf1c2uFKTTOUMXemwnrOvUze0VIrw68AMzg6WHeZeiSIM/6HO/5srR9bKjYvXLsh9sNyb6lbbdQUO3sO94PfiAAAAAElFTkSuQmCC";
@@ -196,14 +197,22 @@ function hexEncode(buffer) {
     return Array.from(byteArray, byte => ('0' + (byte & 0xFF).toString(16)).slice(-2)).join('');
 }
 
+
+function resetPopupTimer() {
+    clearTimeout(popupTimer);
+    popupTimer = setTimeout(closePopup, 6000);
+}
+
 function showPopup(content) {
     document.getElementById('popup-content').innerHTML = content;
     document.getElementById('popup-overlay').style.display = 'flex';
+    resetPopupTimer();
 }
 
 function closePopup() {
     document.getElementById('popup-overlay').style.display = 'none';
     popup_modal = false;
+    clearTimeout(popupTimer);
 }
 
 function showError(message) {
@@ -358,13 +367,15 @@ function downloadFiles() {
 }
 
 function moveTo() {
-    const destination = prompt('Enter destination path:');
+    const destination = prompt('Enter destination path:\n\nExamples:\nPath from root: \u00A0\u00A0\u00A0\u00A0 /Folder\nRelative path: \u00A0\u00A0\u00A0\u00A0 folder1/folder2');
     if (destination) {
+        showLoading("  Moving files...  ");
         fetch(`/move?data=${JSON.stringify({ src: selectedFiles, dest: destination })}`, {
             method: 'POST'
         })
             .then(function(response) {
                 if(response.ok) {
+                    showNotification("Files moved successfully!");
                     return response.text();
                 }
                 throw new Error('Something went wrong.');
@@ -372,7 +383,7 @@ function moveTo() {
             .then(function(text) {
                 loadDirectoryContents(currentPath);
                 clearSelection();
-                showPopup('Files moved successfully!');
+                showNotification("Files moved successfully!");
             })  
             .catch(function(error) {
                 showError('Server error: ' + error);
@@ -407,13 +418,15 @@ function new_Folder() {
 }
 
 function copyTo() {
-    const destination = prompt('Enter destination path:');
+    const destination = prompt('Enter destination path:\n\nExamples:\nPath from root: \u00A0\u00A0\u00A0\u00A0 /Folder\nRelative path: \u00A0\u00A0\u00A0\u00A0 folder1/folder2');
     if (destination) {
+        showLoading("  Copying files...  ");
         fetch(`/copy?data=${JSON.stringify({ src: selectedFiles, dest: destination })}`, {
             method: 'POST'
         })
             .then(function(response) {
                 if(response.ok) {
+                    showNotification("Files copied successfully!");
                     return response.text();
                 }
                 throw new Error('Something went wrong.');
@@ -421,7 +434,7 @@ function copyTo() {
             .then(function(text) {
                 loadDirectoryContents(currentPath);
                 clearSelection();
-                showPopup('Files copied successfully!');
+                showNotification("Files copied successfully!");
             })  
             .catch(function(error) {
                 showError('Server error: ' + error);
@@ -440,6 +453,7 @@ function renameFile() {
     new_path = new_path.replace(/\/\//g, '/');
 
     if (newName) {
+        showLoading("  Renaming files...  ");
         fetch(`/rename?data=${JSON.stringify({ old_name: selectedFiles[0], new_name: new_path })}`, {
             method: 'POST'
         })
@@ -461,6 +475,7 @@ function renameFile() {
 }
 
 function deleteFiles() {
+    showLoading("  Deleting files...  ");
     fetch(`/delete?files=${JSON.stringify(selectedFiles)}`, {
         method: 'DELETE'
     })
